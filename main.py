@@ -1,13 +1,5 @@
-class user:
-  def __init__(self,name,id):
-    self.name = name
-    self.id = id
-
-
-
-
-mama = user("martin",22)
-
+from criptoRequest import CriptoRequest
 
 if __name__ == "__main__":
-  print(mama.name)
+  instance = CriptoRequest("usd","btc")
+  print(instance.get_price())
