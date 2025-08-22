@@ -1,7 +1,9 @@
 import os
 import requests
 from dotenv import load_dotenv
+from utils import unix_to_cr
 load_dotenv()
+
 HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/json"}
 BASE_URL = os.getenv("CRIPTO_SIMPLE_URL")
 class CriptoRequest:
@@ -10,12 +12,15 @@ class CriptoRequest:
     self.cripto_code = cripto_code
     self.HEADERS = HEADERS
     self.BASE_URL = BASE_URL
-
+    
   def get_price(self):
-    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&symbols={self.cripto_code}"
+    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&symbols={self.cripto_code}&include_last_updated_at=true"
     response = requests.get(price_url,self.HEADERS)
-    print(price_url)
-    return response.json().get(self.cripto_code).get(self.base_currencie)
+    res = response.json()
+    price = res.get(self.cripto_code).get(self.base_currencie)
+    #TODO: fix unix_to_cr
+    last_updated = unix_to_cr(res.get(self.cripto_code).get("last_updated_at"))
+    return {"price":price,"last_uptadted":last_updated}    
   
   
     
