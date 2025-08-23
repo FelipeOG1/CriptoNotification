@@ -12,7 +12,6 @@ class CriptoRequest:
     self.cripto_code = cripto_code
     self.HEADERS = HEADERS
     self.BASE_URL = BASE_URL
-    
   def get_price(self):
     price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&symbols={self.cripto_code}&include_last_updated_at=true"
     response = requests.get(price_url,self.HEADERS)
