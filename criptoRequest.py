@@ -1,7 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from utils import unix_to_cr
+from utils import unix_to_utc
 load_dotenv()
 
 HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/json"}
@@ -18,7 +18,8 @@ class CriptoRequest:
     res = response.json()
     price = res.get(self.cripto_code).get(self.base_currencie)
     #TODO: fix unix_to_cr
-    last_updated = unix_to_cr(res.get(self.cripto_code).get("last_updated_at"))
+    last_updated = res.get(self.cripto_code).get("last_updated_at")
+    print(unix_to_utc(last_updated))
     return {"price":price,"last_uptadted":last_updated}    
   
   
