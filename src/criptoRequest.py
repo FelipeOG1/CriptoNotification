@@ -7,7 +7,7 @@ load_dotenv()
 HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/json"}
 BASE_URL = os.getenv("CRIPTO_SIMPLE_URL")
 
-class CriptoRequest:
+class CriptoRequest():
   def __init__(self,cripto_code,base_currencie=None):
     self.base_currencie = base_currencie if base_currencie is not None else "usd"
     self.cripto_code = cripto_code
