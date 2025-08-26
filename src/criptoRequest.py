@@ -8,31 +8,52 @@ HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/js
 BASE_URL = os.getenv("CRIPTO_SIMPLE_URL")
 
 class CriptoRequest():
-  def __init__(self,cripto_code,base_currencie=None):
+  def __init__(self,cripto_id,base_currencie=None):
     self.base_currencie = base_currencie if base_currencie is not None else "usd"
-    self.cripto_code = cripto_code
+    self.cripto_id = cripto_id 
     self.HEADERS = HEADERS
-    self.BASE_URL = BASE_URL 
+    self.BASE_URL = BASE_URL
 
-  def get_price(self):
-    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&symbols={self.cripto_code}&include_last_updated_at=true"
+
+  def _base_request(self,url, method = "get",data = None, params = None):
     try:
-      response = requests.get(price_url,self.HEADERS,timeout=5)
+      response = None
+      match(method.lower()):
+        case "get":
+          response = requests.get(url,headers = HEADERS,data = data ,params = params,timeout=5)
+        case "post":
+          response = requests.post(url,headers = HEADERS,data = data ,params = params,timeout = 5)
+        case _:
+          raise ValueError(f"Unsupported method: {method}")         
+      if response.status_code == 200 or response.status_code ==202:     
+        return {"status": response.status_code, "content":response.json()}
+      else:
+        return {"status": response.status_code, "content":response.text}
+
     except Exception as e:
-      print(f"exception happened {e}")
-    if response.status_code == 200:
-      res = response.json()
-      price = res.get(self.cripto_code).get(self.base_currencie)
-      last_updated = res.get(self.cripto_code).get("last_updated_at")
-      last_updated_utc = unix_to_utc(last_updated)
-      fecha_str = last_updated_utc.strftime("%Y-%m-%d")  
-      hora_str = last_updated_utc.strftime("%H:%M:%S")
-      return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
-    else:
-      return {"Mesasge":response.text,"status":response.status_code} 
+        return {"status": 500, "content": str(e)}
+    
+  def get_current_price(self):
+    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&ids={self.cripto_id}&include_last_updated_at=true"
+    response = self._base_request(price_url,"get")
+    res = response.get("content")   
+    id = self.cripto_id.lower()
+    price = res.get(id).get(self.base_currencie)
+    last_updated = res.get(id).get("last_updated_at")
+    last_updated_utc = unix_to_utc(last_updated)
+    fecha_str = last_updated_utc.strftime("%Y-%m-%d")  
+    hora_str = last_updated_utc.strftime("%H:%M:%S")
+    return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
+  
+  def find_coin_id(self,coin_name):
+    coin_name = coin_name.capitalize()
+    URL = os.getenv("CRIPTO_COIN_LIST_URL")
+    response = self._base_request(URL,method="get")
+    probables  = [coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)]
+    return probables
   
 
-   
   
-  
+
+
     
