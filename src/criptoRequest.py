@@ -49,8 +49,13 @@ class CriptoRequest():
     coin_name = coin_name.capitalize()
     URL = os.getenv("CRIPTO_COIN_LIST_URL")
     response = self._base_request(URL,method="get")
-    probables  = [coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)]
-    return probables
+    if response["status"] == 200:
+      probables  = [coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)]
+      message = "success"
+      if len(probables) == 0:
+        message = "No se encontro ninguna moneda con ese nombre"
+      return {"Message":message,"status" : response["status"],"content":probables}
+    return response
   
 
   
