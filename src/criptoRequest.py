@@ -14,8 +14,8 @@ class CriptoRequest():
     self.HEADERS = HEADERS
     self.BASE_URL = BASE_URL
 
-
-  def _base_request(self,url, method = "get",data = None, params = None):
+  @staticmethod
+  def _base_request(url, method = "get",data = None, params = None):
     try:
       response = None
       match(method.lower()):
@@ -35,8 +35,10 @@ class CriptoRequest():
     
   def get_current_price(self):
     price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&ids={self.cripto_id}&include_last_updated_at=true"
-    response = self._base_request(price_url,"get")
-    res = response.get("content")   
+    response = CriptoRequest._base_request(price_url,"get")
+
+    if response["status"] not in {200,202} :return response["content"]
+    res = response.get("content")
     id = self.cripto_id.lower()
     price = res.get(id).get(self.base_currencie)
     last_updated = res.get(id).get("last_updated_at")
@@ -44,21 +46,16 @@ class CriptoRequest():
     fecha_str = last_updated_utc.strftime("%Y-%m-%d")  
     hora_str = last_updated_utc.strftime("%H:%M:%S")
     return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
-  
-  def find_coin_id(self,coin_name):
+  @staticmethod
+  def find_coin_id(coin_name):
     coin_name = coin_name.capitalize()
     URL = os.getenv("CRIPTO_COIN_LIST_URL")
-    response = self._base_request(URL,method="get")
+    response = CriptoRequest._base_request(URL,method="get")
     if response["status"] == 200:
-      probables  = [coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)]
+      probables  = set([coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)])
       message = "success"
       if len(probables) == 0:
         message = "No se encontro ninguna moneda con ese nombre"
       return {"Message":message,"status" : response["status"],"content":probables}
     return response
   
-
-  
-
-
-    
