@@ -1,9 +1,8 @@
 from criptoRequest import CriptoRequest
-from user import User
+from db.database import Database
+import os
+import sys
 if __name__ == "__main__":
-  cripto = CriptoRequest("Bitcoin")
-  new_user =User("martin","+506 3313188") 
-  print(new_user.add_coin("solana",33,33))
-   
-
+  db = Database("coins_db")
   
+ 

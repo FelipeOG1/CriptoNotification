@@ -32,11 +32,9 @@ class CriptoRequest():
 
     except Exception as e:
         return {"status": 500, "content": str(e)}
-    
   def get_current_price(self):
     price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&ids={self.cripto_id}&include_last_updated_at=true"
     response = CriptoRequest._base_request(price_url,"get")
-
     if response["status"] not in {200,202} :return response["content"]
     res = response.get("content")
     id = self.cripto_id.lower()
@@ -46,6 +44,7 @@ class CriptoRequest():
     fecha_str = last_updated_utc.strftime("%Y-%m-%d")  
     hora_str = last_updated_utc.strftime("%H:%M:%S")
     return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
+
   @staticmethod
   def find_coin_id(coin_name):
     coin_name = coin_name.capitalize()

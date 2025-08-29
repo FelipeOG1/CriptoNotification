@@ -3,7 +3,7 @@ class User:
     "memory coins have is map with coin id as key and array with cell notifiation as index 0 and buy notification as  index 1 "
     def __init__(self,username,phone_number):
         self.username = username
-        self.phoneNumber = phone_number 
+        self.phone_number = phone_number 
         "Set to tests "
         self.coins = {} 
     def add_coin(self,coin_name,sell,buy):
@@ -23,14 +23,13 @@ class User:
         
         print(response["Message"])
         return None
+
+    def show_coins(self):
+        print(self.coins)
         
-       
+
         
-        
-      
-        
-        
-    
+           
        
 
     
