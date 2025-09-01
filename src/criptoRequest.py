@@ -1,7 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from utils.dates import unix_to_utc
+from .utils.dates import unix_to_utc
 load_dotenv()
 
 HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/json"}
