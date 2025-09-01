@@ -8,16 +8,38 @@ class Database:
     db gonnaa have username,cellphone,registercoins,
     """
     def __init__(self,db_name):
-       self.conn = self.start_conn(db_name)
-       self.cursor = self.conn.cursor()
-        
-    def start_conn(self,db_name:str)->Optional[Connection]:
+       self.connection = self.start_connection(db_name)
+       self.cursor = self.connection.cursor()
+    def start_connection(self,db_name:str)->Optional[Connection]:
        try:
          return sqlite3.connect(f"{db_name}.db")
-         
        except Error as e:
            print("Error creating db")
            return None
        
-    
+    def create_tables(self)->None:
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        phone_number INTEGER NOT NULL,
+        phone_extension_code INTEGER
+        )
+            ''' )
+          
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS notifications(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        coin_id TEXT NOT NULL,
+        sell REAL DEFAULT 0,
+        buy REAL DEFAULT 0,
+        notified BOOLEAN DEFAULT 0
+        FOREIGN_KEY(user_id) REFERENCES users(id)
+        )
+        ''' )
+        
+        self.connection.commit()
+        
+          
+        
 
