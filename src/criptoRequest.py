@@ -46,15 +46,21 @@ class CriptoRequest():
     return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
 
   @staticmethod
-  def find_coin_id(coin_name):
+  def coin_is_valid(coin_name:str)->bool:
     coin_name = coin_name.capitalize()
     URL = os.getenv("CRIPTO_COIN_LIST_URL")
     response = CriptoRequest._base_request(URL,method="get")
     if response["status"] == 200:
-      probables  = set([coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)])
-      message = "success"
+      probables  = set([coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)])   
       if len(probables) == 0:
-        message = "No se encontro ninguna moneda con ese nombre"
-      return {"Message":message,"status" : response["status"],"content":probables}
-    return response
+        print("No se encontro ninguna moneda con ese nombre")
+        return False
+      if coin_name in probables:return True
+
+      print("No se encontro esa moneda")
+      print(f"Monedas similares :f{probables} ")
+      return False
+    print(response)
+    return False
+  
   

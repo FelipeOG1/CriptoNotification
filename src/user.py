@@ -6,33 +6,18 @@ class User:
         self.username = username
         self.phone_number = phone_number
         self.phone_extension = phone_extension
+        
     def add_coin(self,coin_name,sell,buy)->Optional[list]:
         from .criptorequest import CriptoRequest
-        from .databse import Database
-        db = Database("coins_db")
+        coin_is_valid = CriptoRequest.coin_is_valid()
+        if coin_is_valid:   
+            from .databse import Database
+            db = Database("coins_db")
+            db.add_coin()
         
-        response = CriptoRequest.find_coin_id(coin_name)
-        if response["status"] not in {200,202} :return response["content"]
-        results = response["content"]
-        if len(results)>0:
-            if coin_name in results:
-                "add to db"
-                self.coins[coin_name] = {"sell":32131.3,"buy":30.000}
-                print("Moneda agregada con exito")
-                return self.coins
-                pass
-            print("No se encontro la moneda dentro de los probables, seguro la escribio bien?")
-            print(f"Monedas similares: {results}")
-            return None
+    def _add_user_to_db(self):
         
-        print(response["Message"])
-        return None
-
-    def show_coins(self):
-        print(self.coins)
-        
-
-        
+        pass
            
        
 

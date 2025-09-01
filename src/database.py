@@ -58,16 +58,14 @@ class Database:
         
         self.connection.commit()
         return status
-
     def add_user(self,user)->None:
         from .user import User
         if not isinstance(user,User):
             raise TypeError(f"Expected a user and recived {type(user).__name__}")
 
         user_values = tuple(user.__dict__.values()))
-        
-        return None 
         result = self._execute("INSERT INTO users (username, phone_number, phone_extension_code) VALUES (?, ?, ?);",user_values)
+        
      
 
 
