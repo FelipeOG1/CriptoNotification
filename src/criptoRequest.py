@@ -7,7 +7,7 @@ load_dotenv()
 HEADERS = {"x-cg-demo-api-key":os.getenv("CRIPTO_KEY"),"accept": "application/json"}
 BASE_URL = os.getenv("CRIPTO_SIMPLE_URL")
 
-class CriptoRequest():
+class Coin():
   def __init__(self,cripto_id,base_currencie=None):
     self.base_currencie = base_currencie if base_currencie is not None else "usd"
     self.cripto_id = cripto_id 
@@ -32,26 +32,20 @@ class CriptoRequest():
 
     except Exception as e:
         return {"status": 500, "content": str(e)}
-  def get_current_price(self):
-    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&ids={self.cripto_id}&include_last_updated_at=true"
-    response = CriptoRequest._base_request(price_url,"get")
-    if response["status"] not in {200,202} :return response["content"]
-    res = response.get("content")
-    id = self.cripto_id.lower()
-    price = res.get(id).get(self.base_currencie)
-    last_updated = res.get(id).get("last_updated_at")
-    last_updated_utc = unix_to_utc(last_updated)
-    fecha_str = last_updated_utc.strftime("%Y-%m-%d")  
-    hora_str = last_updated_utc.strftime("%H:%M:%S")
-    return {"Message":"Sucess","Price":price,"last_uptadted":f"{fecha_str} {hora_str}"}
-
+  def get_current_price(self,coins:list):
+    from urllib.parse import quote
+    coins = [coin.capitalize() for coin in coins]
+    cripto_names_encoded = quote(",".join(coins))
+    price_url = f"{self.BASE_URL}?vs_currencies={self.base_currencie}&names={cripto_names_encoded}"
+    response = Coin._base_request(price_url,"get")
+    return response["content"]
   @staticmethod
-  def coin_is_valid(coin_name:str)->bool:
+  def coin_exist(coin_name:str)->bool:
     coin_name = coin_name.capitalize()
     URL = os.getenv("CRIPTO_COIN_LIST_URL")
-    response = CriptoRequest._base_request(URL,method="get")
+    response = Coin._base_request(URL,method="get")
     if response["status"] == 200:
-      probables  = set([coin["id"] for coin in response.get("content") if coin["name"].startswith(coin_name)])   
+      probables  = set([coin["name"] for coin in response.get("content") if coin["name"].startswith(coin_name)])   
       if len(probables) == 0:
         print("No se encontro ninguna moneda con ese nombre")
         return False
