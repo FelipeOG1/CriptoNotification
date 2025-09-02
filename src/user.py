@@ -7,20 +7,13 @@ class User:
         self.phone_number = phone_number
         self.phone_extension = phone_extension
         
-    def add_coin(self,coin_name,sell,buy)->Optional[list]:
+    def add_coin(self,coin_id:str,sell:int,buy:int)->Optional[list]:
         from .criptorequest import CriptoRequest
         coin_is_valid = CriptoRequest.coin_is_valid()
         if coin_is_valid:   
-            from .databse import Database
+            from .database import Database
             db = Database("coins_db")
-            db.add_coin()
-        
-    def _add_user_to_db(self):
-        
-        pass
-           
-       
+            db.add_coin_db(coin_id,self.username,sell,buy)
 
-    
-
-    
+            
+            
