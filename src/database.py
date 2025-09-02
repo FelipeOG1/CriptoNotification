@@ -3,7 +3,7 @@ import os
 import sys
 import sqlite3
 from sqlite3 import Connection,Error
-from typing import Optional
+from typing import Optional,Union
 from .user import User
 class Database:
     """
@@ -20,15 +20,14 @@ class Database:
            return None
        
     def create_tables(self)->None:
-        
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
+        username TEXT UNIQUE NOT NULL,
         phone_number INTEGER NOT NULL,
         phone_extension_code INTEGER
         )
-            ''')
+        ''')
           
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS notifications(
@@ -45,27 +44,30 @@ class Database:
         self.connection.commit()
     
    
-    def _execute(self,query:str,query_tuple = None)->bool:
-        
+    def _execute(self,query:str,query_tuple = None)->list:
         status = False
-        last_row :int = self.cursor.lastrowid
-        self.cursor.execute(query,query_tuple)
-        new_last_row :int = self.cursor.lastrowid
-        return [last_row,new_last_row]
-        if new_last_row > last_row:
-            
-            status = True
-        
+        if query_tuple:
+            self.cursor.execute(query,query_tuple)
+        else:
+            self.cursor.execute(query)
         self.connection.commit()
-        return status
-    def add_user(self,user)->None:
-        from .user import User
+        return self.cursor.fetchall() 
+    
+    def get_user_id(self,username:str)->Optional[int]:
+        user_id:int =self._execute("SELECT id FROM users WHERE username = ?;",(username,))[0][0]
+        return user_id
+    
+    from .user import User
+    def add_user_db(self,user:User)->None:
         if not isinstance(user,User):
             raise TypeError(f"Expected a user and recived {type(user).__name__}")
-
-        user_values = tuple(user.__dict__.values()))
+        if self.get_user_id(user.username)>0:
+            print("user already exist")
+            return 
+        user_values = tuple(user.__dict__.values())
         result = self._execute("INSERT INTO users (username, phone_number, phone_extension_code) VALUES (?, ?, ?);",user_values)
+        print("Usuario insertado de manera correcta")
+    def add_coin_db(self,coin_id:str,username:str,sell:int,buy:int):
+        pass
         
-     
-
-
+        
