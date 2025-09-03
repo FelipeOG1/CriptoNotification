@@ -24,8 +24,8 @@ class Database:
         CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
-        phone_number INTEGER NOT NULL,
-        phone_extension_code INTEGER
+        phone_number TEXT NOT NULL,
+        phone_extension_code TEXT
         )
         ''')
           
