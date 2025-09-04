@@ -5,10 +5,12 @@ from .database import Database
 from .user import User
 from .whatsapp_notification import WhatsappNotification
 if __name__ == "__main__":
-   prices = CoinsUtils.get_current_price(["solana","bitcoin"])
-   w = WhatsappNotification("50685793304")
-   for elem in prices:
-       key = elem
-       price = elem["usd"]
-       print(price)
-
+    db = Database("CriptoNotifier")
+    user = User("Felipe","85793284","506")
+    pending = db.get_notifications()
+    
+    
+    
+    #TODO:create the new user_workflow and later create the already registered coins worflow
+       
+    

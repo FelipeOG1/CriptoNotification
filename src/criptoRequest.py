@@ -34,8 +34,6 @@ class CoinsUtils():
     price_url = f"{BASE_URL}?vs_currencies={base_currencie}&names={cripto_names_encoded}"
     response = CoinsUtils._base_request(price_url,"get")
     return response["content"]
-
-
   @staticmethod
   def coin_exist(coin_name:str)->bool:
     coin_name = coin_name.capitalize()
@@ -47,7 +45,6 @@ class CoinsUtils():
         print("No se encontro ninguna moneda con ese nombre")
         return False
       if coin_name in probables:return True
-
       print("No se encontro esa moneda")
       print(f"Monedas similares :f{probables} ")
       return False

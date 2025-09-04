@@ -39,11 +39,9 @@ class Database:
         user_id INTEGER NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id)
         )
-        ''')
-        
+        ''')       
         self.connection.commit()
     
-   
     def _execute(self,query:str,query_tuple = None)->list:
         status = False
         if query_tuple:
@@ -52,22 +50,33 @@ class Database:
             self.cursor.execute(query)
         self.connection.commit()
         return self.cursor.fetchall() 
-    
-    def get_user_id(self,username:str)->Optional[int]:
-        user_id:int =self._execute("SELECT id FROM users WHERE username = ?;",(username,))[0][0]
+
+    def get_user_id(self,phone_number:str)->Optional[int]:
+        user_id:int =self._execute("SELECT id FROM users WHERE phone_number = ?;",(phone_number,))
+        if user_id:
+            return user_id[0][0]
         return user_id
-    
     from .user import User
     def add_user_db(self,user:User)->None:
         if not isinstance(user,User):
             raise TypeError(f"Expected a user and recived {type(user).__name__}")
-        if self.get_user_id(user.username)>0:
+        if self.get_user_id(user.username):
             print("user already exist")
             return 
         user_values = tuple(user.__dict__.values())
         result = self._execute("INSERT INTO users (username, phone_number, phone_extension_code) VALUES (?, ?, ?);",user_values)
         print("Usuario insertado de manera correcta")
-    def add_coin_db(self,coin_id:str,username:str,sell:int,buy:int):
-        pass
+    from .notification import Notification
+    
+    def add_notification_db(self,notification:Notification):
+        name = "mama"
+        num = 20
+    
+    def get_notifications(self):
+        res = self._execute("SELECT coin_id from coins where notified = 0")
+        return res
         
+    
+    
+      
         

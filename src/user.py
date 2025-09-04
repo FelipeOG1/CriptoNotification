@@ -15,5 +15,3 @@ class User:
             db = Database("coins_db")
             db.add_coin_db(coin_id,self.username,sell,buy)
 
-            
-            
