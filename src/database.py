@@ -79,7 +79,7 @@ class Database:
         noti_values = tuple(notification.__dict__.values())
         self._execute("INSERT into notifications (user_id,coin_name,sell,buy) VALUES(?,?,?,?)",noti_values)
     
-    def get_pending_notifications(self)->list[tuple[Notification,...]]:
+    def get_pending_notifications(self)->list[dict[Notification,...]]:
         res = self._execute("SELECT * from notifications where notified = 0")
         return res
     def get_phone_number(self,user_id:int)->str:
