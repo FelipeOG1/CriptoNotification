@@ -5,6 +5,7 @@ import sqlite3
 from sqlite3 import Connection,Error
 from typing import Optional,Union
 from .user import User
+
 class Database:
     """
     db gonnaa have username,cellphone,registercoins,
@@ -25,7 +26,7 @@ class Database:
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         phone_number TEXT NOT NULL,
-        phone_extension_code TEXT
+        phone_extension_code TEXT NOT NULL
         )
         ''')
           
@@ -57,7 +58,7 @@ class Database:
             return user_id[0][0]
         return user_id
     from .user import User
-    def add_user_db(self,user:User)->None:
+    def add_user(self,user:User)->None:
         if not isinstance(user,User):
             raise TypeError(f"Expected a user and recived {type(user).__name__}")
         if self.get_user_id(user.username):
@@ -66,14 +67,15 @@ class Database:
         user_values = tuple(user.__dict__.values())
         result = self._execute("INSERT INTO users (username, phone_number, phone_extension_code) VALUES (?, ?, ?);",user_values)
         print("Usuario insertado de manera correcta")
-    from .notification import Notification
-    
-    def add_notification_db(self,notification:Notification):
-        name = "mama"
-        num = 20
-    
-    def get_notifications(self):
-        res = self._execute("SELECT coin_id from coins where notified = 0")
+    def add_notification(self,notification)->None:
+        from .notification import Notification 
+        if not isinstance(notification,Notification):
+            raise TypeError(f"Expected a user and recived {type(notification).__name__}")
+        noti_values = tuple(notification.__dict__.values())
+        self._execute("INSERT into notifications (user_id,coin_id,sell,buy) VALUES(?,?,?,?)",noti_values)
+         
+    def get_pending_notifications(self):
+        res = self._execute("SELECT * from notifications where notified = 0")
         return res
         
     
