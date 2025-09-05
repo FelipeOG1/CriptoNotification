@@ -9,7 +9,7 @@ BASE_URL = os.getenv("CRIPTO_SIMPLE_URL")
 
 class CoinsUtils():
   @staticmethod
-  def _base_request(url, method = "get",data = None, params = None):
+  def _base_request(url, method = "get",data = None, params = None)->dict:
     try:
       response = None
       match(method.lower()):
@@ -27,7 +27,7 @@ class CoinsUtils():
     except Exception as e:
         return {"status": 500, "content": str(e)}
   @staticmethod
-  def get_current_price(coins:set,base_currencie:str = "Usd"):
+  def get_current_price(coins:set,base_currencie:str = "Usd")->dict:
     from urllib.parse import quote
     coins = [coin.capitalize() for coin in coins]
     cripto_names_encoded = quote(",".join(coins))
