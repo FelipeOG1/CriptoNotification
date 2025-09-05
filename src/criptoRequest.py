@@ -27,11 +27,11 @@ class CoinsUtils():
     except Exception as e:
         return {"status": 500, "content": str(e)}
   @staticmethod
-  def get_current_price(coins:list,base_currencie:str = "Usd"):
+  def get_current_price(coins:set,base_currencie:str = "Usd"):
     from urllib.parse import quote
     coins = [coin.capitalize() for coin in coins]
     cripto_names_encoded = quote(",".join(coins))
-    price_url = f"{BASE_URL}?vs_currencies={base_currencie}&names={cripto_names_encoded}"
+    price_url = f"{BASE_URL}?vs_currencies={base_currencie}&names={cripto_names_encoded}&precision=0"
     response = CoinsUtils._base_request(price_url,"get")
     return response["content"]
   @staticmethod

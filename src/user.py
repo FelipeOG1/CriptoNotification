@@ -2,16 +2,8 @@ from typing import Optional
 
 class User:
     "memory coins have is map with coin id as key and array with cell notifiation as index 0 and buy notification as  index 1 "
-    def __init__(self,username:str,phone_number:int,phone_extension:int):
+    def __init__(self,username:str,phone_number:str,phone_extension:str):
         self.username = username
         self.phone_number = phone_number
         self.phone_extension = phone_extension
         
-    def add_coin(self,coin_id:str,sell:int,buy:int)->Optional[list]:
-        from .criptorequest import CriptoRequest
-        coin_is_valid = CriptoRequest.coin_is_valid()
-        if coin_is_valid:   
-            from .database import Database
-            db = Database("coins_db")
-            db.add_coin_db(coin_id,self.username,sell,buy)
-
