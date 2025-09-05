@@ -77,7 +77,7 @@ class Database:
         if not isinstance(notification,Notification):
             raise TypeError(f"Expected a user and recived {type(notification).__name__}")
         noti_values = tuple(notification.__dict__.values())
-        self._execute("INSERT into notifications (user_id,coin_id,sell,buy) VALUES(?,?,?,?)",noti_values)
+        self._execute("INSERT into notifications (user_id,coin_name,sell,buy) VALUES(?,?,?,?)",noti_values)
     
     def get_pending_notifications(self)->list[tuple[Notification,...]]:
         res = self._execute("SELECT * from notifications where notified = 0")

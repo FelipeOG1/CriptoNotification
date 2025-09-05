@@ -8,24 +8,22 @@ from .notification import Notification
 from .criptoRequest import CoinsUtils
 if __name__ == "__main__":
     db = Database("CriptoNotifier")
-    user = User("Felipe","85793284","506")
-    
-    """
-    coin_names = set([x[1] for x in pendings])
+    noti = Notification(1,"Solana",198,200)
+    pendings = db.get_pending_notifications()
+    coin_names = set([x["coin_name"] for x in pendings])
     prices = CoinsUtils.get_current_price(coin_names)
-    user_id = 5
-    coin_name = 1
-    buy_price = 2
-    sell_price = 3
-    print(pendings)
-    pending_notis = {}
-    for elem in pendings:
-        uid = elem[user_id]
-        coin = elem[coin_name]
-        prices = (elem[buy_price], elem[sell_price])
-        if uid not in pending_notis:
-            pending_notis[uid] = {}          
-        pending_notis[uid][coin] = prices
-    """
-        
-   
+    def get_notifications(pendings,prices):  
+        for coin_name in prices:
+            coin_price = prices[coin_name]["usd"]
+            for pen in pendings:
+                if pen["coin_name"] == coin_name:
+                    if pen["sell"]>coin_price:
+                        print('vendeee')
+                        print(f"precio a vender {pen['sell']}")
+                        print(f"precio actual de {coin_name}: {coin_price}")
+                    elif pen["buy"]<coin_price:
+                        print("compraaa")
+                        
+    
+    get_sell_notifications(pendings,prices)
+       

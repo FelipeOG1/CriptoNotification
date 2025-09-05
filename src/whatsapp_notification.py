@@ -9,15 +9,22 @@ import os
     
 load_dotenv()
 class WhatsappNotification:
-    def __init__(self,phone_number:str):
-        self.phone_number = phone_number
-        self.base_url = f"https://graph.facebook.com/v22.0/{os.getenv('WHATSAPP_IDENTIFIER')}/messages"
-        self.base_headers = {
+    def __init__(self,phone_number:str,type_notification:str):
+        self.phone_number == phone_number
+        self.type_notification = type_notification
+        
+    def send_notification(self,coin_name:str,coin_price:int)->None:
+        base_url = f"https://graph.facebook.com/v22.0/{os.getenv('WHATSAPP_IDENTIFIER')}/messages"
+        base_headers = {
                 "Authorization": f"Bearer {os.getenv("WHATSAPP_KEY")}",
                 "Content-Type": "application/json"
         } 
-    def send_message(self,message:str):
-         send_message_body = {
+
+        if self.type_notificaiton == "sell":
+            message = f "Es buen momento para vender {coin_name} tiene un precio de {coin_price}"
+        if self.type_notification == "buy":
+            message = f "Es buen momento para comprar ahora {coin_name} tiene un precio de {coin_price}"
+        send_message_body = {
              "messaging_product": "whatsapp",
              "to":self.phone_number,
              "type":"text",
@@ -25,18 +32,10 @@ class WhatsappNotification:
                  "body":message
             }
             }
-         send_response = requests.post(self.base_url, json = send_message_body,headers = self.base_headers)
-         print(send_response.text)
-         print(self.base_headers)
-    from .user import User
-    from .database import Database
-    def create_notification(user_message:dict,user:User)->None:
-       db = Database("CriptoNotifier")
-       user_id = db.get_user_id(user.username)
-      
         
-        
-        
+       send_response = requests.post(base_url, json = send_message_body,headers = base_headers)
+       print(send_response)
+       
         
          
         
