@@ -10,7 +10,7 @@ import os
 load_dotenv()
 class WhatsappNotification:
     def __init__(self,phone_number:str,type_notification:str):
-        self.phone_number == phone_number
+        self.phone_number = phone_number
         self.type_notification = type_notification
         
     def send_notification(self,coin_name:str,coin_price:int)->None:
@@ -20,10 +20,10 @@ class WhatsappNotification:
                 "Content-Type": "application/json"
         } 
 
-        if self.type_notificaiton == "sell":
-            message = f "Es buen momento para vender {coin_name} tiene un precio de {coin_price}"
+        if self.type_notification == "sell":
+            message = f"Es buen momento para vender {coin_name} tiene un precio de {coin_price}"
         if self.type_notification == "buy":
-            message = f "Es buen momento para comprar ahora {coin_name} tiene un precio de {coin_price}"
+            message = f"Es buen momento para comprar ahora {coin_name} tiene un precio de {coin_price}"
         send_message_body = {
              "messaging_product": "whatsapp",
              "to":self.phone_number,
@@ -32,11 +32,10 @@ class WhatsappNotification:
                  "body":message
             }
             }
-        
-       send_response = requests.post(base_url, json = send_message_body,headers = base_headers)
-       print(send_response)
-       
-        
+            
+        send_response = requests.post(base_url, json = send_message_body,headers = base_headers)
+        print(send_response.json()) 
+            
          
         
        

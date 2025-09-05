@@ -83,11 +83,15 @@ class Database:
         res = self._execute("SELECT * from notifications where notified = 0")
         return res
     def get_phone_number(self,user_id:int)->str:
-        result = self._execute("SELECT phone_number,phone_extension_code from users where id = ?;",(user_id,))
+        print(user_id)
+        result = self._execute("SELECT phone_number,phone_extension_code from users where id = ?",(user_id,))
+        
         if result:
            phone = result[0]["phone_number"]
            extension = result[0]["phone_extension_code"]
-           return f"{extension}{phone}"
+           result = f"{extension}{phone}"
+           return result
+
         
         
         
