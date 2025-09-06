@@ -7,25 +7,15 @@ import requests
 import os
 load_dotenv()
 class WhatsappNotification:
-    def __init__(self,phone_number:str,type_notification:str):
+    def __init__(self,phone_number:str):
         self.phone_number = phone_number
-        self.type_notification = type_notification
+    def send_notification(self,coin_name:str,coin_price:int,action:str)->None:
         
-    def send_notification(self,coin_name:str,coin_price:int)->None:
         base_url = f"https://graph.facebook.com/v22.0/{os.getenv('WHATSAPP_IDENTIFIER')}/messages"
         base_headers = {
                 "Authorization": f"Bearer {os.getenv("WHATSAPP_KEY")}",
                 "Content-Type": "application/json"
         }
-        match(self.type_notification):
-         case "sell":
-            message = f"Es buen momento para vender {coin_name} tiene un precio de {coin_price}"
-         case "buy":
-            message = f"Es buen momento para comprar ahora {coin_name} tiene un precio de {coin_price}"
-         case _:
-              print(f"No se soporta el evento {self.type_notification}")
-              return 
-
         payload = {
         "messaging_product": "whatsapp",
         "to": self.phone_number,
@@ -37,9 +27,9 @@ class WhatsappNotification:
                 {
                     "type": "BODY",
                     "parameters": [
-                        {"type": "text", "text": "solana"},   # {{1}}
-                        {"type": "text", "text": "323232"},  # {{2}}
-                        {"type": "text", "text": "vender"} # {{3}}
+                        {"type": "text", "text": coin_name},   # {{1}}
+                        {"type": "text", "text": coin_price},  # {{2}}
+                        {"type": "text", "text": action} # {{3}}
                     ]
                 }
             ]

@@ -14,13 +14,13 @@ def get_notifications(pendings,prices):
         if coin_price>pen["sell"]:
             phone_number = db.get_phone_number(pen["user_id"])
             if phone_number:
-                notification = WhatsappNotification(phone_number,"sell")
-                notification.send_notification(coin_name,coin_price)
+                notification = WhatsappNotification(phone_number)
+                notification.send_notification(coin_name,coin_price,"vender")
         elif coin_price<pen["buy"]:
             phone_number = db.get_phone_number(pen["user_id"])
             if phone_number:  
-                notification = WhatsappNotification(phone_number,"buy")
-                notification.send_notification(coin_name,coin_price)
+                notification = WhatsappNotification(phone_number)
+                notification.send_notification(coin_name,coin_price,"comprar")
         continue    
 
 if __name__ == "__main__":
