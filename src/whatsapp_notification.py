@@ -35,8 +35,7 @@ class WhatsappNotification:
             }
         
         send_response = requests.post(base_url, json = send_message_body,headers = base_headers)
-        print(send_response.json()) 
-            
+        print(send_response.status_code)   
          
         
          

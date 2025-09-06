@@ -6,8 +6,30 @@ from sqlite3 import Connection,Error
 from typing import Optional,Union
 from .user import User
 from .notification import Notification 
+class Database:
+    
+    def __init__(self,db_name:str):
+        self.connection = self.start_connection(db_name)
+        self.cursor = self.connection.cursor()
+        self.connection.row_factory = sqlite3.Row
+    def start_connection(self,db_name: str) -> sqlite3.Connection:
+        try:
+            conn = sqlite3.connect(f"{db_name}.db")
+            conn.row_factory = sqlite3.Row
+            return conn
+        except Error as e:
+            print(f"Error creating db {db_name}: {e}")
+            raise
 
-
+    def _execute(self,query:str,query_tuple:Optional[tuple] = None):
+        if query_tuple:
+            self.cursor.execute(query,query_tuple)
+        else:
+            self.cursor.execute(query)
+        
+        rows = self.cursor.fetchall()
+        return [row for row in rows]
+        
     def get_user_id(self,phone_number:str)->Optional[int]:
         user_id = self._execute("SELECT id FROM users WHERE phone_number = ?;",(phone_number,))
         if user_id:
