@@ -21,7 +21,7 @@ def get_notifications(pendings,prices):
             if phone_number:  
                 notification = WhatsappNotification(phone_number,"buy")
                 notification.send_notification(coin_name,coin_price)
-            continue    
+        continue    
 
 if __name__ == "__main__":
     db = Database("CriptoNotifier")
