@@ -13,12 +13,14 @@ def get_notifications(pendings,prices):
       if pen["coin_name"] == coin_name:
         if coin_price>pen["sell"]:
             phone_number = db.get_phone_number(pen["user_id"])
-            notification = WhatsappNotification(phone_number,"sell")
-            notification.send_notification(coin_name,coin_price)
+            if phone_number:
+                notification = WhatsappNotification(phone_number,"sell")
+                notification.send_notification(coin_name,coin_price)
         elif coin_price<pen["buy"]:
             phone_number = db.get_phone_number(pen["user_id"])
-            notification = WhatsappNotification(phone_number,"buy")
-            notification.send_notification(coin_name,coin_price)
+            if phone_number:  
+                notification = WhatsappNotification(phone_number,"buy")
+                notification.send_notification(coin_name,coin_price)
             continue    
 
 if __name__ == "__main__":
@@ -28,3 +30,5 @@ if __name__ == "__main__":
     prices = CoinsUtils.get_current_price(coin_names)
     print(prices)
     get_notifications(pendings,prices)
+    
+    
