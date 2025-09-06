@@ -25,19 +25,27 @@ class WhatsappNotification:
          case _:
               print(f"No se soporta el evento {self.type_notification}")
               return 
-        send_message_body = {
-             "messaging_product": "whatsapp",
-             "to":self.phone_number,
-             "type":"text",
-             "text":{
-                 "body":message
-            }
-            }
-        
-        send_response = requests.post(base_url, json = send_message_body,headers = base_headers)
-        print(send_response.status_code)   
+
+        payload = {
+        "messaging_product": "whatsapp",
+        "to": self.phone_number,
+        "type": "template",
+        "template": {
+            "name": "cripto_noti",   # nombre exacto de la plantilla
+            "language": {"code": "en"},  # idioma exacto
+            "components": [
+                {
+                    "type": "BODY",
+                    "parameters": [
+                        {"type": "text", "text": "solana"},   # {{1}}
+                        {"type": "text", "text": "323232"},  # {{2}}
+                        {"type": "text", "text": "vender"} # {{3}}
+                    ]
+                }
+            ]
+        }
+    }
+        send_response = requests.post(base_url, json = payload,headers = base_headers)
+        print(send_response.content)   
          
-        
-         
-        
         
