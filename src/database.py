@@ -48,13 +48,7 @@ class Database:
             self.cursor.execute(query)
         rows = self.cursor.fetchall()
         return [dict(row) for row in rows]
-        
-    def get_user_id(self,phone_number:str)->Optional[int]:
-        user_id = self._execute("SELECT id FROM users WHERE phone_number = ?;",(phone_number,))
-        if user_id:
-            return user_id[0][0]
-        return None
-
+    #ADDS  
     from .user import User
     def add_user(self,user:User)->None:
         if not isinstance(user,User):
@@ -72,7 +66,8 @@ class Database:
         noti_values = tuple(notification.__dict__.values())
         self._execute("INSERT into notifications (user_id,coin_name,sell,buy) VALUES(?,?,?,?)",noti_values)
         self.connection.commit()
-        
+    
+    #GETS
     def get_pending_notifications(self)->list[dict]:
         res = self._execute("SELECT * from notifications where notified = 0")
         return res
@@ -94,4 +89,17 @@ class Database:
         
       return self._execute("SELECT * FROM notifications")
 
-        
+    def get_user_id(self,phone_number:str)->Optional[int]:
+        user_id = self._execute("SELECT id FROM users WHERE phone_number = ?;",(phone_number,))
+        if user_id:
+            return user_id[0][0]
+        return None
+    #UPDATES
+    def update_notified_field(self,noti_id:int)->None:
+        self._execute("UPDATE notifications set notified = 1 where id = ?;",(noti_id,))
+        self.connection.commit()
+        return
+
+
+
+
