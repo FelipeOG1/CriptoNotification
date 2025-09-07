@@ -10,7 +10,7 @@ class WhatsappNotification:
     def __init__(self,phone_number:str):
         self.phone_number = phone_number
     def send_notification(self,coin_name:str,coin_price:int,action:str)->None:
-        
+        assert action in ("vender,comprar"),f"accion {action} no es valida "
         base_url = f"https://graph.facebook.com/v22.0/{os.getenv('WHATSAPP_IDENTIFIER')}/messages"
         base_headers = {
                 "Authorization": f"Bearer {os.getenv("WHATSAPP_KEY")}",
@@ -21,8 +21,8 @@ class WhatsappNotification:
         "to": self.phone_number,
         "type": "template",
         "template": {
-            "name": "cripto_noti",   # nombre exacto de la plantilla
-            "language": {"code": "en"},  # idioma exacto
+            "name": "cripto_noti",   
+            "language": {"code": "en"},  
             "components": [
                 {
                     "type": "BODY",
@@ -36,6 +36,6 @@ class WhatsappNotification:
         }
     }
         send_response = requests.post(base_url, json = payload,headers = base_headers)
-        print(send_response.content)   
-         
+        if send_response.status_code == 200:
+            print(f"Notificacion enviada con exito al numero {self.phone_number}")
         

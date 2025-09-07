@@ -6,7 +6,7 @@ from .user import User
 from .whatsapp_notification import WhatsappNotification
 from .notification import Notification
 from .criptoRequest import CoinsUtils
-
+import os
 def get_notifications(pendings,prices,db):  
   for coin_name in prices:
     coin_price = prices[coin_name]["usd"]
@@ -32,25 +32,17 @@ def main_loop(time_sleep:int):
             coin_names = set([x["coin_name"] for x in pendings])
             prices = CoinsUtils.get_current_price(coin_names)
             get_notifications(pendings,prices,db)
-        print("No se tienen notificaciones para enviar")
-        
-        
+        else:
+            print("No existen notificaiones pendintes")
 if __name__ == "__main__":
+    print(f"Initating process with id {os.getpid()}")
     db = Database("CriptoNotifier")
-    r = db._execute("select * from users")
-    s= db._execute("select * from notifications")
-    db.add_user(User("Felipe","85793284","506"))
-    db.add_user(User("Saul","85793304","506"))
-    
-
-    """
     h1 = threading.Thread(target = main_loop,args = (5,),daemon=True)  
-    h1.start()
-    
+    h1.start()   
     while(True):
         time.sleep(300)
     
-    """    
+     
        
     
     
