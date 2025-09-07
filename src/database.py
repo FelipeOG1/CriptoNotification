@@ -7,11 +7,31 @@ from typing import Optional,Union
 from .user import User
 from .notification import Notification 
 class Database:
-    
     def __init__(self,db_name:str):
         self.connection = self.start_connection(db_name)
         self.cursor = self.connection.cursor()
-        self.connection.row_factory = sqlite3.Row
+        self.connection.row_factory = sqlite3
+        self._create_tables() 
+    def _create_tables(self):
+        self._execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            phone_number TEXT,
+            username TEXT,
+            phone_extension TEXT
+        )
+        """)
+        self._execute("""
+        CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        coin_name TEXT,
+        sell INTEGER,
+        buy INTEGER,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+            )
+            """)         
+            
     def start_connection(self,db_name: str) -> sqlite3.Connection:
         try:
             conn = sqlite3.connect(f"{db_name}.db")
@@ -63,6 +83,5 @@ class Database:
            result = f"{extension}{phone}"
            return result
        
-    
       
         
