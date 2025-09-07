@@ -7,8 +7,9 @@ import requests
 import os
 load_dotenv()
 class WhatsappNotification:
-    def __init__(self,phone_number:str):
+    def __init__(self,phone_number:str,noti_id:int):
         self.phone_number = phone_number
+        self.notification_id = noti_id
     def send_notification(self,coin_name:str,coin_price:int,action:str)->None:
         assert action in ("vender,comprar"),f"accion {action} no es valida "
         base_url = f"https://graph.facebook.com/v22.0/{os.getenv('WHATSAPP_IDENTIFIER')}/messages"
@@ -37,5 +38,12 @@ class WhatsappNotification:
     }
         send_response = requests.post(base_url, json = payload,headers = base_headers)
         if send_response.status_code == 200:
-            print(f"Notificacion enviada con exito al numero {self.phone_number}")
+            from database import Database
+            db = Database("CriptoNotifier")
+            db.update_notified_field(self.notification_id)
+            print(f"{action} notification sended succesfully to {self.phone_number}")
+        else:
+            print(send_response.content)
+            
+            
         
